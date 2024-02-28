@@ -56,10 +56,8 @@ public class Mine : MonoBehaviour {
 
         // Neutralizando força
         rigidBody.AddForce(-forceVector, ForceMode2D.Force);
-        
         // Salvando força
         forceVector = (rocket.transform.position - transform.position).normalized * 1500F;
-
         // Aplicando força
         rigidBody.AddForce(forceVector, ForceMode2D.Force);
 

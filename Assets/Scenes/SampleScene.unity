@@ -745,7 +745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedLimit: 80
-  accelIntensity: 90
+  accelIntensity: 120.3
   boostMultiplier: 1.5
   brakeIntensity: 7
   brakingMinimumVelocity: 0.5
@@ -754,6 +754,9 @@ MonoBehaviour:
   bullet: {fileID: 3980581670258360207, guid: fffa1b1ebb7c09944a9f199011057d20, type: 3}
   Boom: {fileID: 8300000, guid: dee32a33c2091104793eba40c395588a, type: 3}
   pewPew: {fileID: 8300000, guid: fe3f011724cd3ec468cdbea959c0597b, type: 3}
+  dashAvailableTimeOut: 1.5
+  dashDuration: 0.18
+  dashForce: 50000
 --- !u!212 &869813955
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -796,7 +799,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -1848171590, guid: e7fddab13d4240e46a4018659bf8110d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6745098, g: 1, b: 0.63529414, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1289,7 +1292,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 100, y: 100}
+  m_Size: {x: 200, y: 200}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

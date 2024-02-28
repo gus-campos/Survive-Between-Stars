@@ -754,6 +754,8 @@ MonoBehaviour:
   bullet: {fileID: 3980581670258360207, guid: fffa1b1ebb7c09944a9f199011057d20, type: 3}
   Boom: {fileID: 8300000, guid: dee32a33c2091104793eba40c395588a, type: 3}
   pewPew: {fileID: 8300000, guid: fe3f011724cd3ec468cdbea959c0597b, type: 3}
+  dashDuration: 0.5
+  dashForce: 40000
 --- !u!212 &869813955
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1083,7 +1085,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1026689108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1097,11 +1099,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minePrefab: {fileID: 3980581670258360207, guid: d51bf0fbbfb8a5d4aa4840248704dfc4, type: 3}
-  timerCriteria: 2
+  timerCriteria: 0.99
   distanceFromRocket: 25
   generationRadius: 100
-  boom: {fileID: 8300000, guid: 32377864911bcb742a34378ef8dc0569, type: 3}
-  mineExplosion: {fileID: 8081121981353260416, guid: 712eeeec52a00bd4ab4c4f03f55023b2, type: 3}
 --- !u!4 &1026689109
 Transform:
   m_ObjectHideFlags: 0

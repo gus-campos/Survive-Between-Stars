@@ -745,7 +745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedLimit: 80
-  accelIntensity: 90
+  accelIntensity: 120.3
   boostMultiplier: 1.5
   brakeIntensity: 7
   brakingMinimumVelocity: 0.5
@@ -754,6 +754,8 @@ MonoBehaviour:
   bullet: {fileID: 3980581670258360207, guid: fffa1b1ebb7c09944a9f199011057d20, type: 3}
   Boom: {fileID: 8300000, guid: dee32a33c2091104793eba40c395588a, type: 3}
   pewPew: {fileID: 8300000, guid: fe3f011724cd3ec468cdbea959c0597b, type: 3}
+  dashDuration: 0.25
+  dashForce: 100000
 --- !u!212 &869813955
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1083,7 +1085,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1026689108
 MonoBehaviour:
   m_ObjectHideFlags: 0

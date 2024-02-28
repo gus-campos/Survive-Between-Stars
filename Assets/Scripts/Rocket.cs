@@ -27,7 +27,6 @@ public class Rocket : MonoBehaviour {
     [SerializeField] private float speedLimiterSmoothTime = 0.5F;
 
     // Rotação da nave
-    private Vector3 rocketVector;
     [SerializeField] private float ignoreMouseRadius = 15F;
     
     private float debug1;
@@ -54,6 +53,15 @@ public class Rocket : MonoBehaviour {
     // Um objeto "vazio" da classe RigidBody2D
     private Rigidbody2D fisica;
     private Director director;
+
+    // Dash
+    private bool dashing = false;
+    private float dashAvailableTimer;
+    private bool dashAvailable = true;
+    [SerializeField] private float dashAvailableTimeOut;
+    private float dashDurationTimer;
+    [SerializeField] private float dashDuration;
+    [SerializeField] private float dashForce;
    
     // ==========================================================================================================
     
@@ -78,29 +86,76 @@ public class Rocket : MonoBehaviour {
         director = GameObject.FindObjectOfType<Director>();
     }
 
-
     void FixedUpdate() {
-
+        
         // Atualizar rotação
         UpdateRotation();
+
+        // Atualizar estado do dash
+        UpdateDash();
+
     }
 
+    
     // Update é chamado pela Unity em cada frame do jogo
     void Update() {
 
-        // Acelerar
-        if (Input.GetMouseButton(1)) { Accel(); }
+        if (!dashing) {
 
-        // Freiar
-        if (Input.GetKey(KeyCode.Space)) { Brake(); }
+            // Acelerar
+            if (Input.GetMouseButton(1)) { Accel(); }
 
-        // Shoot Particle
-        if (Input.GetMouseButtonDown(0)) { ShootParticle(); }
+            // Freiar
+            if (Input.GetKey(KeyCode.Space)) { Brake(); }
 
-         // Vetor com a mesma orientação que o foguete
-        rocketVector = Quaternion.Euler(transform.eulerAngles) * Vector3.right;
-        
+            // Shoot Particle
+            if (Input.GetMouseButtonDown(0)) { ShootParticle(); }
+
+            // Dash
+            if (Input.GetKeyDown("left shift")) { if (dashAvailable)  { Dash(); } } // dashAvailable
+
+        }
     }
+
+    void UpdateDash() {
+
+        if (dashing) {
+         
+            // Decrementar timer de dashing
+            dashDurationTimer -= Time.deltaTime;
+        
+            // Se tiver zerado o timer
+            if (dashDurationTimer <= 0f) {
+
+                // Removendo impulso
+                fisica.AddForce(-fisica.velocity.normalized * dashForce, ForceMode2D.Impulse);
+                // Não está mais dando dash
+                dashing = false;
+                // Declarar como não disponível
+                dashAvailable = false;
+            }
+        }
+
+        else if (!dashAvailable) {
+
+            // Decrementar o timer de disponibilidade
+            dashAvailableTimer -= Time.deltaTime;
+
+            Debug.Log(dashAvailableTimer);
+
+            // Se tiver esgotado o timer para disponibilidade
+            if (dashAvailableTimer <= 0) {
+
+                Debug.Log("Disponíel");
+
+                // Resetar o contador
+                dashAvailableTimer = dashAvailableTimeOut;
+                // Declarar que está disponível
+                dashAvailable = true;
+            }
+        }
+    }
+
 
     // Se colidir, terminar jogo
     private void OnCollisionEnter2D(Collision2D collisionInfo) { 
@@ -129,10 +184,12 @@ public class Rocket : MonoBehaviour {
     private void Accel() {
 
         // Se left shift tiver apertado, usar modo turbo (multiplicar do boost)
-        if (Input.GetKey("left shift")) { accelMultiplier = boostMultiplier; } else { accelMultiplier = 1; }
+        //if (false) { accelMultiplier = boostMultiplier; } else { accelMultiplier = 1; }
+
+        accelMultiplier = 1;
 
         // Acelerar linearmente
-        fisica.AddForce(accelMultiplier * accelIntensity * rocketVector, ForceMode2D.Impulse);
+        fisica.AddForce(accelMultiplier * accelIntensity * (Quaternion.Euler(transform.eulerAngles) * Vector3.right), ForceMode2D.Impulse);
             
         // Limitador de velocidade: se velocidade for maior que o permitido
         if (fisica.velocity.magnitude > accelMultiplier * speedLimit) {
@@ -145,6 +202,20 @@ public class Rocket : MonoBehaviour {
             fisica.velocity = Vector3.SmoothDamp(current, target, ref accelCurrentVariation, speedLimiterSmoothTime);
 
         }
+    }
+
+    private void Dash() {
+
+        Debug.Log("On");
+
+        // Resetando o timer de duração do dash
+        dashDurationTimer = dashDuration;
+        // Resetando o timer de disponibilidade do dash
+        dashAvailableTimer = dashAvailableTimeOut;
+        // Adicionando força
+        fisica.AddForce(Quaternion.Euler(transform.eulerAngles) * Vector3.right * dashForce, ForceMode2D.Impulse);
+        // Está com dash ativado
+        dashing = true;
     }
 
     private void Brake() {
@@ -190,7 +261,7 @@ public class Rocket : MonoBehaviour {
     private void ShootParticle() {
 
         // 10 é o comprimento da ponta da nave, para n detectar o tiro com si
-        shooterPosition = transform.position + rocketVector * rocketLenth;
+        shooterPosition = transform.position + Quaternion.Euler(transform.eulerAngles) * Vector3.right * rocketLenth;
         // Criar bala
         Instantiate(bullet, shooterPosition, transform.rotation);
         // Tocar som de itro

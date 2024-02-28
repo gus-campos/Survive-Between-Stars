@@ -17,8 +17,6 @@ public class Director : MonoBehaviour {
         
         // Capturando nave
         rocket = GameObject.FindObjectOfType<Rocket>();
-        // Capturando gerador de minas
-        mineGenerator = GameObject.FindObjectOfType<MineGenerator>();
         // Capturando AudioSource
         soundtrack = GetComponent<AudioSource>();
 

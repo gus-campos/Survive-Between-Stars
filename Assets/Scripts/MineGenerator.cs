@@ -56,6 +56,8 @@ public class MineGenerator : MonoBehaviour {
         // Para cada mina gerada na lista
         foreach ( GameObject mine in minesGenerated ) {
 
+            Debug.Log("destroyall");
+
             // Destruir
             Destroy(mine);
 
