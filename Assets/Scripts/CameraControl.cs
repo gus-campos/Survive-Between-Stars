@@ -16,6 +16,11 @@ public class CameraControl : MonoBehaviour {
     
     [SerializeField] private GameObject rocket;
 
+    public void Move(Vector3 position) {
+        
+        transform.position = new Vector3(position.x, position.z, cameraZcoordinate);
+    }
+
     void LateUpdate() {
     
         // Alvo: posição da nave, com o Z modificado - parece que a câmera tem que ficar atrás da cena

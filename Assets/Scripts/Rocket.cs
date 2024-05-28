@@ -10,7 +10,11 @@ using Vector3 = UnityEngine.Vector3;
 using Vector2 = UnityEngine.Vector2;
 using Quaternion = UnityEngine.Quaternion;
 using System.Runtime.CompilerServices;
+//using Microsoft.Unity.VisualStudio.Editor;
 //using UnityEditor.Experimental.GraphView;
+
+using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 public class Rocket : MonoBehaviour {
 
@@ -43,16 +47,22 @@ public class Rocket : MonoBehaviour {
     private Vector3 shooterPosition;
     private float rocketLenth = 25f;
     [SerializeField] private GameObject bullet;
+    [SerializeField] private float shootCooldownTimeout = 0.25f;
+    private float shootCooldownTimer;
+    private bool shootAvailable = true;
 
     // Sons
     private AudioSource rocketAudioSource;
     [SerializeField] private AudioClip Boom;
     [SerializeField] private AudioClip pewPew;
+    [SerializeField] private AudioClip dashingSound;
 
     // Declarando uma propriedade desta classe
     // Um objeto "vazio" da classe RigidBody2D
     private Rigidbody2D fisica;
     private Director director;
+    // Click duplo
+    private float lastClick = Mathf.NegativeInfinity;
 
     // Dash
     private bool dashing = false;
@@ -62,6 +72,15 @@ public class Rocket : MonoBehaviour {
     private float dashDurationTimer;
     [SerializeField] private float dashDuration;
     [SerializeField] private float dashForce;
+    private float rocketMomentum;
+    private int clickCounter = 0;
+    private float multipleClickDelta = 0.3f;
+    
+    // Dashbar
+    [SerializeField] private Image dashBar;
+
+    // Cursor
+    [SerializeField] private Texture2D cursorTexture;
    
     // ==========================================================================================================
     
@@ -78,12 +97,22 @@ public class Rocket : MonoBehaviour {
         startingPosition = transform.position;
         startingRotation = transform.rotation;
         startingVelocity = fisica.velocity;
+
+        // Inicializando timer 
     }
 
     private void Start() {
 
+        // Definindo a tag como "Player"
+        gameObject.tag = "Player";
+
         // Capturando GameObject Director
         director = GameObject.FindObjectOfType<Director>();
+
+        // Definindo imagem do cursor
+        Cursor.SetCursor(cursorTexture, 
+                         new Vector2 (cursorTexture.width, cursorTexture.height) / 2, 
+                         CursorMode.Auto);
     }
 
     void FixedUpdate() {
@@ -94,9 +123,11 @@ public class Rocket : MonoBehaviour {
         // Atualizar estado do dash
         UpdateDash();
 
+        // Atualizar tiro
+        UpdateShoot();
+
     }
 
-    
     // Update é chamado pela Unity em cada frame do jogo
     void Update() {
 
@@ -109,24 +140,92 @@ public class Rocket : MonoBehaviour {
             if (Input.GetKey(KeyCode.Space)) { Brake(); }
 
             // Shoot Particle
-            if (Input.GetMouseButtonDown(0)) { ShootParticle(); }
+            if (Input.GetMouseButtonDown(0)) { if (shootAvailable) { Shoot(); } }
 
             // Dash
-            if (Input.GetKeyDown("left shift")) { if (dashAvailable)  { Dash(); } } // dashAvailable
+            if (MultClickTest()) { if (dashAvailable) { Dash(); } }
+        }
+    }
 
+    // Checa por cliques múltiplos feitos - com "(clickCounter == 2)" identifica clique duplo
+    private bool MultClickTest() {
+
+        // Se botão direito foi apertado
+        if (Input.GetMouseButtonDown(1)) {
+            
+            // Avaliar se já foi apertado muito recentemente
+            if (Time.time - lastClick < multipleClickDelta) {
+
+                // Incrementar o contador de clique
+                clickCounter += 1;
+
+                // Se a contagem estiver em 3
+                if (clickCounter == 2) {
+
+                    // Declarar que click triplo foi feito
+                    return true;
+                }
+
+                // Se a contagem não está em 3
+                else { 
+
+                    // Gravar momento de tal pressionamento
+                    lastClick = Time.time;
+                    // Declarar que click triplo não foi feito
+                    return false; 
+                }
+            }
+
+            // Do contrário
+            else {
+                
+                // Reiniciar contador, contando o primeiro clique
+                clickCounter = 1;
+                // Gravar momento de tal pressionamento
+                lastClick = Time.time;
+                // Declarar que clique duplo não foi feito
+                return false;
+            }
+        }
+
+        // Declarar que clique duplo não foi feito
+        else { return false; }
+    }
+
+    void UpdateShoot() {
+
+        if (!shootAvailable) {
+
+            // Decrementar o timer
+            shootCooldownTimer -= Time.deltaTime;
+            // Se timer tiver zerado
+            if (shootCooldownTimer <=0 ) {
+
+                // Declarar que está disponível
+                shootAvailable = true;
+            }
         }
     }
 
     void UpdateDash() {
 
+        // Atualizar barra
+        if (dashAvailable) { dashBar.fillAmount = 1f; } 
+        
+        else { dashBar.fillAmount = 1 - (dashAvailableTimer / dashAvailableTimeOut); }
+        
+        //Debug.Log(100 * dashAvailableTimer / dashAvailableTimeOut);
+
         if (dashing) {
          
             // Decrementar timer de dashing
             dashDurationTimer -= Time.deltaTime;
-        
+
             // Se tiver zerado o timer
             if (dashDurationTimer <= 0f) {
 
+                // Devolvendo momento de antes do dash, na direção do dash
+                fisica.AddForce(fisica.velocity.normalized * rocketMomentum, ForceMode2D.Impulse);
                 // Removendo impulso
                 fisica.AddForce(-fisica.velocity.normalized * dashForce, ForceMode2D.Impulse);
                 // Não está mais dando dash
@@ -141,12 +240,8 @@ public class Rocket : MonoBehaviour {
             // Decrementar o timer de disponibilidade
             dashAvailableTimer -= Time.deltaTime;
 
-            Debug.Log(dashAvailableTimer);
-
             // Se tiver esgotado o timer para disponibilidade
             if (dashAvailableTimer <= 0) {
-
-                Debug.Log("Disponíel");
 
                 // Resetar o contador
                 dashAvailableTimer = dashAvailableTimeOut;
@@ -176,6 +271,16 @@ public class Rocket : MonoBehaviour {
         transform.rotation = startingRotation;
         fisica.velocity = startingVelocity;
         
+        // Resetando timers
+        dashAvailableTimer = 0;
+        shootCooldownTimer = 0;
+        dashDurationTimer = 0;
+        
+        // Resetando bools
+        dashing = false;
+        dashAvailable = true;
+        shootAvailable = true;
+        
         // Ligar simulação física
         fisica.simulated = true;
     }
@@ -189,7 +294,7 @@ public class Rocket : MonoBehaviour {
         accelMultiplier = 1;
 
         // Acelerar linearmente
-        fisica.AddForce(accelMultiplier * accelIntensity * (Quaternion.Euler(transform.eulerAngles) * Vector3.right), ForceMode2D.Impulse);
+        fisica.AddForce(accelMultiplier * accelIntensity * (transform.rotation * Vector3.right), ForceMode2D.Impulse);
             
         // Limitador de velocidade: se velocidade for maior que o permitido
         if (fisica.velocity.magnitude > accelMultiplier * speedLimit) {
@@ -206,16 +311,20 @@ public class Rocket : MonoBehaviour {
 
     private void Dash() {
 
-        Debug.Log("On");
-
         // Resetando o timer de duração do dash
         dashDurationTimer = dashDuration;
         // Resetando o timer de disponibilidade do dash
         dashAvailableTimer = dashAvailableTimeOut;
-        // Adicionando força
-        fisica.AddForce(Quaternion.Euler(transform.eulerAngles) * Vector3.right * dashForce, ForceMode2D.Impulse);
-        // Está com dash ativado
+        // Achar momento da nave, guardar
+        rocketMomentum = fisica.velocity.magnitude * fisica.mass;
+        // Remover momento atual da nave
+        fisica.AddForce(fisica.velocity.normalized * -rocketMomentum, ForceMode2D.Impulse);
+        // Adicionando momento do dash
+        fisica.AddForce(transform.rotation * Vector3.right * dashForce, ForceMode2D.Impulse);
+        // Declarar que dash está ativado
         dashing = true;
+        // Tocar som
+        rocketAudioSource.PlayOneShot(dashingSound, 1F);
     }
 
     private void Brake() {
@@ -258,7 +367,7 @@ public class Rocket : MonoBehaviour {
         }
     }
 
-    private void ShootParticle() {
+    private void Shoot() {
 
         // 10 é o comprimento da ponta da nave, para n detectar o tiro com si
         shooterPosition = transform.position + Quaternion.Euler(transform.eulerAngles) * Vector3.right * rocketLenth;
@@ -266,6 +375,10 @@ public class Rocket : MonoBehaviour {
         Instantiate(bullet, shooterPosition, transform.rotation);
         // Tocar som de itro
         rocketAudioSource.PlayOneShot(pewPew, 1F);
+        // Declarar que não está mais disponível
+        shootAvailable = false;
+        // Resetar o timer
+        shootCooldownTimer = shootCooldownTimeout;
 
     }
 

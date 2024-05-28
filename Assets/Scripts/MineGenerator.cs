@@ -17,36 +17,65 @@ public class MineGenerator : MonoBehaviour {
     private float timer;
     // Prefab da mina
     [SerializeField] private GameObject minePrefab;
-    // Tempo do timer 
+    // Tempo do timer
     [SerializeField] private float timerCriteria;
     // Distância da nave
     [SerializeField] private float distanceFromRocket;
     // Radius of generation
     [SerializeField] private float generationRadius;
+    // Contador de minas geradas - é decrementado pela classe Mine
+    public int mineCounter = 0;
+    [SerializeField] private int mineMaxCount;
+
+    // Velocidade variada
+    public float mineVelocityNorm;
+    [SerializeField] private float InitialMineVelocityNorm;
+    private float initialTime;
+    [SerializeField] private float normScaling;
+    
+    public void ResetMineVelocity() {
+
+        // Salvando tempo inicial
+        mineVelocityNorm = InitialMineVelocityNorm;
+    }
 
     private void Start() {
 
         // Capturar objeto do foguete
         rocket = GameObject.FindObjectOfType<Rocket>();
 
+        // Salvando tempo inicial
+        ResetMineVelocity();
     }
 
     private void Update() {
-        
-        // Incrementando o timer
-        timer += Time.deltaTime;
-        // Gerando posição aleatória
-        randMine = Random.insideUnitCircle * generationRadius;
-        // Se tiver passado 2 segundos e tiver distante o suficiente da nave
-        if ((timer > timerCriteria) && (randMine.magnitude > distanceFromRocket)) {
 
-            // Gerar e adionar à lista de minas geradas 
-            minesGenerated.Add(Object.Instantiate(minePrefab, 
-                                                  rocket.transform.position + randMine, 
-                                                  Quaternion.identity, transform));
+        // Atualizando velocidade global das minas
+        mineVelocityNorm += Time.deltaTime * normScaling;
 
-            // Reiniciar timer
-            timer = 0;
+        Debug.Log(mineVelocityNorm);
+
+        // Gerando minas
+        if (mineCounter < mineMaxCount) {
+
+            // Incrementando o timer
+            timer += Time.deltaTime;
+            // Gerando posição aleatória
+            randMine = Random.insideUnitCircle * generationRadius;
+            // Se tiver passado 2 segundos e tiver distante o suficiente da nave
+            if ((timer > timerCriteria) && (randMine.magnitude > distanceFromRocket)) {
+
+                // Gerar e adionar à lista de minas geradas 
+                minesGenerated.Add(Object.Instantiate(minePrefab, 
+                                                    rocket.transform.position + randMine, 
+                                                    Quaternion.identity, transform));
+
+                // Incrementar contador de minas
+                mineCounter += 1;
+
+                // Reiniciar timer
+                timer = 0;
+            }
         }
     }
 
@@ -56,11 +85,11 @@ public class MineGenerator : MonoBehaviour {
         // Para cada mina gerada na lista
         foreach ( GameObject mine in minesGenerated ) {
 
-            Debug.Log("destroyall");
-
             // Destruir
             Destroy(mine);
-
         }
+
+        // Reinicializando contador de minas
+        mineCounter = 0;
     }
 }
