@@ -87,9 +87,9 @@ public class Mine : MonoBehaviour {
         spriteRenderer.enabled = false;
         // Instanciar construção da animação de building
         buildingInstantiated = Instantiate(mineBuilding, 
-                                         transform.position, 
-                                         Quaternion.identity, 
-                                         transform);
+                                           transform.position, 
+                                           Quaternion.identity, 
+                                           transform);
     }
 
     public void EndBuilding () {

@@ -19,21 +19,30 @@ public class Director : MonoBehaviour {
     [SerializeField] private GuiManager guiManager;
 
     [SerializeField] private GameObject mainCamera;
+
+    [SerializeField] private GameObject instructionsPanel;
+
     // Indicador de pause
     private bool paused = false;
     // Indicador de jogo terminado
     private bool gameOver = false;
 
+    private bool aux = true;
+
     void Update() {
 
-        // Se tocar tecla esc
+        // Apenas no primeiro update, pausar o jogo
+        if (aux) { Pause(); aux = false; }
+
         if (Input.GetKeyDown(KeyCode.Escape)) {
             
             Pause();
-            //RestartGame();  
         }
 
-
+        if (Input.GetKeyDown(KeyCode.R)) {
+            
+            RestartGame();  
+        }
     }
 
     public void Pause() {
@@ -44,36 +53,32 @@ public class Director : MonoBehaviour {
             // Se não tiver pausado
             if (!paused) {
 
-                // Congelar tempo
                 Time.timeScale = 0;
-                // Ativar o painel de pause
                 pausePanel.SetActive(true);
-                // Declarar que está pausado
                 paused = true;
-                // Interromper trilha sonora
                 soundtrack.Stop();
-
+                instructionsPanel.SetActive(true);
             }
 
-            // Se estiver pausado
             else {
 
-                // Descongelar tempo
                 Time.timeScale = 1;
-                // Dessativar o painel de pause
                 pausePanel.SetActive(false);
-                // Declarar que não está pausado
                 paused = false;
-                // Voltar trilha sonora
                 soundtrack.Play();
+                instructionsPanel.SetActive(false);
             }
         }
     }
 
     public void Start() {
         
+        // Inicia pausado
+        //Pause();
+
         // Capturando AudioSource
         soundtrack = GetComponent<AudioSource>();
+
     }
 
     public void EndGame() {
@@ -96,6 +101,8 @@ public class Director : MonoBehaviour {
         Time.timeScale = 1;
         // Reiniciar nave
         rocket.Reset();
+        // Destruir tiros
+        rocket.DestroyShots();
         // Reposicionando câmera
         mainCamera.GetComponent<CameraControl>().Move(rocket.transform.position);
         // Destruir todas as minas

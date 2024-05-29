@@ -70,7 +70,6 @@
     <Compile Include="Assets\Scripts\BackgroundMover.cs" />
     <Compile Include="Assets\Scripts\Mine.cs" />
     <Compile Include="Assets\Scripts\Director.cs" />
-    <Compile Include="Assets\Scripts\Engine.cs" />
     <Compile Include="Assets\Scripts\CameraControl.cs" />
     <Compile Include="Assets\Scripts\GuiManager.cs" />
     <Compile Include="Assets\Scripts\Rocket.cs" />

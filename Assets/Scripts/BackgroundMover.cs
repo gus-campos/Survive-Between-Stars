@@ -61,8 +61,8 @@ public class BackgroundMover : MonoBehaviour {
         lastPosic = rocket.transform.position;
 
         // Gerando sprites
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
+        for (int i = -2; i < 3; i++) {
+            for (int j = -2; j < 3; j++) {
 
                 backgrounds.Add(Object.Instantiate(baseBackground, lastPosic + i*sizeX + j*sizeY, Quaternion.identity, transform));
             }

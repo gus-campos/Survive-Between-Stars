@@ -50,6 +50,7 @@ public class Rocket : MonoBehaviour {
     [SerializeField] private float shootCooldownTimeout = 0.25f;
     private float shootCooldownTimer;
     private bool shootAvailable = true;
+    private List<GameObject> shotsArray = new List<GameObject>();
 
     // Sons
     private AudioSource rocketAudioSource;
@@ -81,6 +82,7 @@ public class Rocket : MonoBehaviour {
 
     // Cursor
     [SerializeField] private Texture2D cursorTexture;
+
    
     // ==========================================================================================================
     
@@ -140,7 +142,7 @@ public class Rocket : MonoBehaviour {
             if (Input.GetKey(KeyCode.Space)) { Brake(); }
 
             // Shoot Particle
-            if (Input.GetMouseButtonDown(0)) { if (shootAvailable) { Shoot(); } }
+            if (Input.GetMouseButtonDown(0)) { if (shootAvailable && fisica.simulated) { Shoot(); } }
 
             // Dash
             if (MultClickTest()) { if (dashAvailable) { Dash(); } }
@@ -293,17 +295,15 @@ public class Rocket : MonoBehaviour {
 
         accelMultiplier = 1;
 
-        // Acelerar linearmente
         fisica.AddForce(accelMultiplier * accelIntensity * (transform.rotation * Vector3.right), ForceMode2D.Impulse);
             
         // Limitador de velocidade: se velocidade for maior que o permitido
         if (fisica.velocity.magnitude > accelMultiplier * speedLimit) {
             
-            // Velocidade atual
             Vector3 current = fisica.velocity;
-            // Valocidade alvo (limitada)
+
             Vector3 target = Vector3.ClampMagnitude(fisica.velocity, accelMultiplier * speedLimit);
-            // Desaceleração suave
+
             fisica.velocity = Vector3.SmoothDamp(current, target, ref accelCurrentVariation, speedLimiterSmoothTime);
 
         }
@@ -352,14 +352,14 @@ public class Rocket : MonoBehaviour {
         // Se o mouse não estiver muito próximo da nave
         if (rocketToMousePosic.magnitude > ignoreMouseRadius) {
 
+            // ------> Mudar nome das variáveis
+
             // Ângulo do mouse 
             debug1 = Vector3.SignedAngle(rocketToMousePosic, Vector3.right, Vector3.back);
             // Ângulo do foguete
             debug2 = Vector3.SignedAngle(transform.rotation * Vector3.right, Vector3.right, Vector3.back);
             // SmoothDamp entre os dois
             debug3 = Mathf.SmoothDampAngle(current: debug1, target: debug2, currentVelocity: ref debug4, smoothTime: 1000f);
-            // Debug
-            //Debug.Log(new Vector3(debug1, debug2, debug3));
 
             // Apontando nave em direção ao mouse
             fisica.MoveRotation(debug1);
@@ -369,17 +369,22 @@ public class Rocket : MonoBehaviour {
 
     private void Shoot() {
 
-        // 10 é o comprimento da ponta da nave, para n detectar o tiro com si
         shooterPosition = transform.position + Quaternion.Euler(transform.eulerAngles) * Vector3.right * rocketLenth;
-        // Criar bala
-        Instantiate(bullet, shooterPosition, transform.rotation);
-        // Tocar som de itro
-        rocketAudioSource.PlayOneShot(pewPew, 1F);
-        // Declarar que não está mais disponível
-        shootAvailable = false;
-        // Resetar o timer
-        shootCooldownTimer = shootCooldownTimeout;
 
+        shotsArray.Add(Instantiate(bullet, shooterPosition, transform.rotation));
+
+        rocketAudioSource.PlayOneShot(pewPew, 1F);
+
+        shootAvailable = false;
+
+        shootCooldownTimer = shootCooldownTimeout;
     }
 
+    public void DestroyShots() {
+
+        foreach (GameObject shot in shotsArray) {
+
+            Destroy(shot);
+        }
+    }
 }

@@ -77,8 +77,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: a1cf90b14aa94984b945cb410153b2bf, type: 3}
-  m_Color: {r: 0.06666666, g: 1, b: 0.13268463, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 5bdf609495dcd564ca1ee2173553bb1f, type: 3}
+  m_Color: {r: 0.92800003, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -141,7 +141,6 @@ MonoBehaviour:
   mineExplosion: {fileID: 8081121981353260416, guid: 712eeeec52a00bd4ab4c4f03f55023b2, type: 3}
   mineBuilding: {fileID: 1560119258126756261, guid: aac551703102b3841bdc0aac287e5e06, type: 3}
   boom: {fileID: 8300000, guid: 32377864911bcb742a34378ef8dc0569, type: 3}
-  mineVelocityNorm: 121.3
 --- !u!82 &2187951520231593228
 AudioSource:
   m_ObjectHideFlags: 0
