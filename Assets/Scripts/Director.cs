@@ -34,12 +34,12 @@ public class Director : MonoBehaviour {
         // Apenas no primeiro update, pausar o jogo
         if (aux) { Pause(); aux = false; }
 
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (false) { //Input.GetKeyDown(KeyCode.Escape)) {
             
             Pause();
         }
 
-        if (Input.GetKeyDown(KeyCode.R)) {
+        if (false) { //Input.GetKeyDown(KeyCode.R)) {
             
             RestartGame();  
         }

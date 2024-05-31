@@ -320,7 +320,6 @@ namespace EM.AutoSave.Editor
                 // resetSet();
             }
 
-            //Debug.Log(lastSave + " : " +  (float)EDITOR_TIMER + "  : " +  Root.AS_SAVE_INTERVAL_IN_SEC);
             if (Mathf.Abs(lastSave - (float)EDITOR_TIMER) >= Root.AS_SAVE_INTERVAL_IN_SEC)
             {
                 SaveScene();
@@ -607,7 +606,6 @@ namespace EM.AutoSave.Editor
             currentViewWidth = (EditorGUIUtility.currentViewWidth - 16);
             CurrentId = EditorGUIUtility.GetControlID(FocusType.Passive);
             padding = 20;
-            //Debug.Log(  );
             // if ( _lastResetEvent == Event.current.type ) return;
             //_lastResetEvent = Event.current.type;
             groupIndex = 0;

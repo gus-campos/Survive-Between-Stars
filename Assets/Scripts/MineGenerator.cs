@@ -53,8 +53,6 @@ public class MineGenerator : MonoBehaviour {
         // Atualizando velocidade global das minas
         mineVelocityNorm += Time.deltaTime * normScaling;
 
-        Debug.Log(mineVelocityNorm);
-
         // Gerando minas
         if (mineCounter < mineMaxCount) {
 

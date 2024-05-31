@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
+using UnityEngine.InputSystem;
 
 public class Rocket : MonoBehaviour {
 
@@ -32,11 +33,6 @@ public class Rocket : MonoBehaviour {
 
     // Rotação da nave
     [SerializeField] private float ignoreMouseRadius = 15F;
-    
-    private float debug1;
-    private float debug2;
-    private float debug3;
-    private float debug4;
     
     // Dados iniciais da nave para reinicialização
     private Vector3 startingPosition;
@@ -75,13 +71,20 @@ public class Rocket : MonoBehaviour {
     [SerializeField] private float dashForce;
     private float rocketMomentum;
     private int clickCounter = 0;
-    private float multipleClickDelta = 0.3f;
+    private float chainClickDelta = 0.3f;
     
     // Dashbar
     [SerializeField] private Image dashBar;
 
     // Cursor
     [SerializeField] private Texture2D cursorTexture;
+
+    // Accel
+    private bool accelHeld = false;
+
+    private bool mouseMode = false;
+
+    private float rocketRotationAngle;
 
    
     // ==========================================================================================================
@@ -119,73 +122,41 @@ public class Rocket : MonoBehaviour {
 
     void FixedUpdate() {
         
-        // Atualizar rotação
-        UpdateRotation();
-
-        // Atualizar estado do dash
         UpdateDash();
 
-        // Atualizar tiro
-        UpdateShoot();
-
+        UpdateShot();
     }
 
-    // Update é chamado pela Unity em cada frame do jogo
     void Update() {
 
-        if (!dashing) {
-
-            // Acelerar
-            if (Input.GetMouseButton(1)) { Accel(); }
-
-            // Freiar
-            if (Input.GetKey(KeyCode.Space)) { Brake(); }
-
-            // Shoot Particle
-            if (Input.GetMouseButtonDown(0)) { if (shootAvailable && fisica.simulated) { Shoot(); } }
-
-            // Dash
-            if (MultClickTest()) { if (dashAvailable) { Dash(); } }
-        }
+        UpdateAccel();
     }
 
-    // Checa por cliques múltiplos feitos - com "(clickCounter == 2)" identifica clique duplo
-    private bool MultClickTest() {
+    // Checa por cliques múltiplos
+    private bool DoubleClickTest() {
 
-        // Se botão direito foi apertado
-        if (Input.GetMouseButtonDown(1)) {
+        if (false) { //Input.GetMouseButtonDown(1)) {                           // Botão direito
             
-            // Avaliar se já foi apertado muito recentemente
-            if (Time.time - lastClick < multipleClickDelta) {
+            if (Time.time - lastClick < chainClickDelta) {                      // Avaliar se já foi apertado muito recentemente
 
-                // Incrementar o contador de clique
                 clickCounter += 1;
 
-                // Se a contagem estiver em 3
-                if (clickCounter == 2) {
-
-                    // Declarar que click triplo foi feito
-                    return true;
+                if (clickCounter == 2) { 
+                    
+                    return true; 
                 }
 
-                // Se a contagem não está em 3
                 else { 
 
-                    // Gravar momento de tal pressionamento
-                    lastClick = Time.time;
-                    // Declarar que click triplo não foi feito
+                    lastClick = Time.time; 
                     return false; 
                 }
             }
 
-            // Do contrário
             else {
                 
-                // Reiniciar contador, contando o primeiro clique
-                clickCounter = 1;
-                // Gravar momento de tal pressionamento
+                clickCounter = 1;                                   // Reiniciar contagem, contando o primeiro clique
                 lastClick = Time.time;
-                // Declarar que clique duplo não foi feito
                 return false;
             }
         }
@@ -194,7 +165,28 @@ public class Rocket : MonoBehaviour {
         else { return false; }
     }
 
-    void UpdateShoot() {
+    void UpdateAccel() {
+
+        if (!dashing && accelHeld) {
+
+            accelMultiplier = 1;
+
+            fisica.AddForce(accelMultiplier * accelIntensity * (transform.rotation * Vector3.right), ForceMode2D.Impulse);
+                
+            // Limitador de velocidade: se velocidade for maior que o permitido
+            if (fisica.velocity.magnitude > accelMultiplier * speedLimit) {
+                
+                Vector3 current = fisica.velocity;
+
+                Vector3 target = Vector3.ClampMagnitude(fisica.velocity, accelMultiplier * speedLimit);
+
+                fisica.velocity = Vector3.SmoothDamp(current, target, ref accelCurrentVariation, speedLimiterSmoothTime);
+
+            }
+        }
+    }
+
+    void UpdateShot() {
 
         if (!shootAvailable) {
 
@@ -215,8 +207,6 @@ public class Rocket : MonoBehaviour {
         if (dashAvailable) { dashBar.fillAmount = 1f; } 
         
         else { dashBar.fillAmount = 1 - (dashAvailableTimer / dashAvailableTimeOut); }
-        
-        //Debug.Log(100 * dashAvailableTimer / dashAvailableTimeOut);
 
         if (dashing) {
          
@@ -253,8 +243,39 @@ public class Rocket : MonoBehaviour {
         }
     }
 
+    public void ModeSwitch(InputAction.CallbackContext callbackContext) {
 
-    // Se colidir, terminar jogo
+        mouseMode = !mouseMode;
+    }
+
+    public void UpdateRotation(InputAction.CallbackContext callbackContext) {
+
+        Vector2 inputVec = callbackContext.ReadValue<Vector2>();
+
+        if (mouseMode) {
+
+            // Posição do mouse no mundo
+            Vector3 worldMousePosic = Camera.main.ScreenToWorldPoint(inputVec);
+
+            // Zerando a componente Z
+            worldMousePosic.z = 0;
+
+            // Posição do mouse em relação ao foguete
+            Vector3 rocketToMousePosic = worldMousePosic - transform.position;
+            
+            // Se o mouse não estiver muito próximo da nave
+            if (rocketToMousePosic.magnitude > ignoreMouseRadius) {
+
+                fisica.MoveRotation(Vector3.SignedAngle(inputVec, Vector3.right, Vector3.back));
+            }
+        }
+
+        else if (callbackContext.ReadValue<Vector2>() != Vector2.zero) {
+            
+            fisica.MoveRotation(Vector3.SignedAngle(inputVec, Vector3.right, Vector3.back));
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collisionInfo) { 
 
         // Tocar o som de explosão
@@ -262,8 +283,69 @@ public class Rocket : MonoBehaviour {
         // Parar de simular sua física
         fisica.simulated = false;   
         // Congelar o tempo
-        director.EndGame(); 
-        
+        director.EndGame();  
+    }
+
+    public void Shoot(InputAction.CallbackContext callbackContext) {
+
+        if (!dashing && shootAvailable && fisica.simulated && callbackContext.performed) {
+
+            shooterPosition = transform.position + Quaternion.Euler(transform.eulerAngles) * Vector3.right * rocketLenth;
+
+            shotsArray.Add(Instantiate(bullet, shooterPosition, transform.rotation));
+
+            rocketAudioSource.PlayOneShot(pewPew, 1F);
+
+            shootAvailable = false;
+
+            shootCooldownTimer = shootCooldownTimeout;
+        }
+    }
+
+    public void Accel(InputAction.CallbackContext callbackContext) {
+
+        if (callbackContext.started) {accelHeld = true;}
+
+        else if (callbackContext.canceled) {accelHeld = false;}
+    }
+
+    public void Dash(InputAction.CallbackContext callbackContext) {
+
+        if (!dashing && callbackContext.performed && dashAvailable) {
+
+            dashDurationTimer = dashDuration;
+
+            dashAvailableTimer = dashAvailableTimeOut;
+            // Achar momento da nave, guardar
+            rocketMomentum = fisica.velocity.magnitude * fisica.mass;
+            // Remover momento atual da nave
+            fisica.AddForce(fisica.velocity.normalized * -rocketMomentum, ForceMode2D.Impulse);
+            // Adicionando momento do dash
+            fisica.AddForce(transform.rotation * Vector3.right * dashForce, ForceMode2D.Impulse);
+
+            dashing = true;
+
+            rocketAudioSource.PlayOneShot(dashingSound, 1F);
+        }
+    }
+
+    private void Brake() {
+
+        // Só até a velocidade chegar no valor mínimo definido
+        // Além de impedir que fique parado, impede que "dê ré"
+        if (!dashing && fisica.velocity.magnitude > brakingMinimumVelocity) {
+            
+            // Desacelerar linearmente (acelerar pra trás)
+            fisica.AddForce(-brakeIntensity * fisica.velocity, ForceMode2D.Impulse);
+        }
+    }
+
+    public void DestroyShots() {
+
+        foreach (GameObject shot in shotsArray) {
+
+            Destroy(shot);
+        }
     }
 
     public void Reset() {
@@ -285,106 +367,5 @@ public class Rocket : MonoBehaviour {
         
         // Ligar simulação física
         fisica.simulated = true;
-    }
-
-
-    private void Accel() {
-
-        // Se left shift tiver apertado, usar modo turbo (multiplicar do boost)
-        //if (false) { accelMultiplier = boostMultiplier; } else { accelMultiplier = 1; }
-
-        accelMultiplier = 1;
-
-        fisica.AddForce(accelMultiplier * accelIntensity * (transform.rotation * Vector3.right), ForceMode2D.Impulse);
-            
-        // Limitador de velocidade: se velocidade for maior que o permitido
-        if (fisica.velocity.magnitude > accelMultiplier * speedLimit) {
-            
-            Vector3 current = fisica.velocity;
-
-            Vector3 target = Vector3.ClampMagnitude(fisica.velocity, accelMultiplier * speedLimit);
-
-            fisica.velocity = Vector3.SmoothDamp(current, target, ref accelCurrentVariation, speedLimiterSmoothTime);
-
-        }
-    }
-
-    private void Dash() {
-
-        // Resetando o timer de duração do dash
-        dashDurationTimer = dashDuration;
-        // Resetando o timer de disponibilidade do dash
-        dashAvailableTimer = dashAvailableTimeOut;
-        // Achar momento da nave, guardar
-        rocketMomentum = fisica.velocity.magnitude * fisica.mass;
-        // Remover momento atual da nave
-        fisica.AddForce(fisica.velocity.normalized * -rocketMomentum, ForceMode2D.Impulse);
-        // Adicionando momento do dash
-        fisica.AddForce(transform.rotation * Vector3.right * dashForce, ForceMode2D.Impulse);
-        // Declarar que dash está ativado
-        dashing = true;
-        // Tocar som
-        rocketAudioSource.PlayOneShot(dashingSound, 1F);
-    }
-
-    private void Brake() {
-
-        // Só até a velocidade chegar no valor mínimo definido
-        // Além de impedir que fique parado, impede que "dê ré"
-        if (fisica.velocity.magnitude > brakingMinimumVelocity) {
-            
-            // Desacelerar linearmente (acelerar pra trás)
-            fisica.AddForce(-brakeIntensity * fisica.velocity, ForceMode2D.Impulse);
-        }
-    }
-
-    private void UpdateRotation() {
-
-        // Posição do mouse no mundo
-        Vector3 worldMousePosic = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        // Zerando a componente Z
-        worldMousePosic.z = 0;
-
-        // Posição do mouse em relação ao foguete
-        Vector3 rocketToMousePosic = worldMousePosic - transform.position;
-
-        // Se o mouse não estiver muito próximo da nave
-        if (rocketToMousePosic.magnitude > ignoreMouseRadius) {
-
-            // ------> Mudar nome das variáveis
-
-            // Ângulo do mouse 
-            debug1 = Vector3.SignedAngle(rocketToMousePosic, Vector3.right, Vector3.back);
-            // Ângulo do foguete
-            debug2 = Vector3.SignedAngle(transform.rotation * Vector3.right, Vector3.right, Vector3.back);
-            // SmoothDamp entre os dois
-            debug3 = Mathf.SmoothDampAngle(current: debug1, target: debug2, currentVelocity: ref debug4, smoothTime: 1000f);
-
-            // Apontando nave em direção ao mouse
-            fisica.MoveRotation(debug1);
-
-        }
-    }
-
-    private void Shoot() {
-
-        shooterPosition = transform.position + Quaternion.Euler(transform.eulerAngles) * Vector3.right * rocketLenth;
-
-        shotsArray.Add(Instantiate(bullet, shooterPosition, transform.rotation));
-
-        rocketAudioSource.PlayOneShot(pewPew, 1F);
-
-        shootAvailable = false;
-
-        shootCooldownTimer = shootCooldownTimeout;
-    }
-
-    public void DestroyShots() {
-
-        foreach (GameObject shot in shotsArray) {
-
-            Destroy(shot);
-        }
     }
 }
