@@ -1683,7 +1683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1026689108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2479,10 +2479,6 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: e1612e94-f4e5-40cc-8fc3-f6afde3223ec
-    m_ActionName: Rocket/LookGamePad
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: e3127417-4ef0-4ddb-a632-7bd977132b30
     m_ActionName: Rocket/LookMouse[/Mouse/position]
   - m_PersistentCalls:
@@ -2497,10 +2493,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: e754d705-0074-43d5-bfaa-5469fa0810d4
     m_ActionName: Rocket/Dash[/Keyboard/shift]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8c1d15cb-6434-45fd-8d6b-cfef8de74c47
-    m_ActionName: Rocket/MouseMode[/Keyboard/m]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1306960256}
@@ -2537,10 +2529,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: a811c978-96b1-484d-8747-972f72c6c49f
     m_ActionName: System/Pause[/Keyboard/escape]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 7c0aaa07-9769-4c02-9651-0e90e03b0be2
-    m_ActionName: Rocket/Brake[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: System

@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Foguete.sln"
+    "dotnet.defaultSolution": "Foguete.sln",
+    "editor.rulers": [80,120]
 }

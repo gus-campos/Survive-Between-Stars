@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -4597475326095017164}
   m_Layer: 0
   m_Name: beam
-  m_TagString: Untagged
+  m_TagString: Beam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3009a935e5e3ffc488e23f6e390de66a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletImpulseIntensity: 800
+  maxDistanceTraveled: 500
 --- !u!50 &3074982869444087186
 Rigidbody2D:
   serializedVersion: 4
@@ -159,5 +161,5 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1.02, y: 0.4}
+  m_Size: {x: 0.92, y: 0.4}
   m_Direction: 1

@@ -1,26 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 
-using System.Globalization;
-using System.Data;
-
 public class GuiManager : MonoBehaviour {
 
+    private int score = 0;
+    private float survivingSince = 0f;
+    // GUI elements
     [SerializeField] private TextMeshProUGUI TimeText;
     [SerializeField] private TextMeshProUGUI scoreText;
-    // Tempo desde o início da sessão
-    private float retryTime = 0f;
-    // Contador de pontos do score
-    private int scoreCount = 0;
-    
     
     void Update() {
 
-        // Atualizar o texto do relógio com o tempo formatado
-        TimeText.text = FormatTime(Time.time - retryTime);
+        // Updates formated time in GUI
+        TimeText.text = FormatTime(Time.time - survivingSince);
     }
 
     private string FormatTime(float time) {
@@ -31,24 +23,23 @@ public class GuiManager : MonoBehaviour {
 
     public void ResetScore() {
 
-        // Zerar score
-        scoreCount = 0;
-        // marca novo ponto 0 de contagem do tempo
-        retryTime = Time.time;
-
-        // Mostra tempo atualizado
-        TimeText.text = FormatTime(Time.time - retryTime);
-        // Mostra score atualizado
-        scoreText.text = scoreCount.ToString("0");
+        // Resets score
+        score = 0;
+        // Set new initial time for surviving (now)
+        survivingSince = Time.time;
+        // Update survived time to zero
+        TimeText.text = FormatTime(Time.time - survivingSince);
+        // Update score to zero
+        scoreText.text = score.ToString("0");
     }
 
 
     public void AddToScore(int number) {
 
-        // Adicionar número ao Score
-        scoreCount += number;
-        // Mudar o texto do score de acordo
-        scoreText.text = scoreCount.ToString();
+        // Increments score points
+        score += number;
+        // Update score showed in GUI accordingly 
+        scoreText.text = score.ToString();
     }
 
 }

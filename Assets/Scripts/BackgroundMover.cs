@@ -1,84 +1,77 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Object = UnityEngine.Object;
 using Quaternion = UnityEngine.Quaternion;
-using System.Runtime.CompilerServices;
 
 public class BackgroundMover : MonoBehaviour {
 
     [SerializeField] private GameObject baseBackground;
-    [SerializeField] private GameObject rocket;
-    private Sprite sprite;
+    [SerializeField] private GameObject spaceship;
 
-    private Vector2 size;
-    private Vector2 sizeX;
-    private Vector2 sizeY;
-    private List<GameObject> backgrounds = new List<GameObject>();
+    private Sprite _sprite;
+    private Vector3 _size;
+    private Vector3 _initialPosition;
+    private List<GameObject> _backgrounds = new List<GameObject>();
+    private List<Vector3> _backgroundsInitialPosition =  new List<Vector3>();
 
-    private Vector2 lastPosic;
-    
-    private Vector2 gridIndex;
+    // --------------------------------------------- Public ------------------------------------------------------------
+    void Awake() {
 
+        spaceship = GameObject.FindGameObjectWithTag("Player");
+        _sprite = baseBackground.GetComponent<SpriteRenderer>().sprite;
 
-    private void Awake() {
-
-        rocket = GameObject.Find("Rocket");
-
-        sprite = baseBackground.GetComponent<SpriteRenderer>().sprite;
-        size = sprite.rect.size / sprite.pixelsPerUnit;
-
-        sizeX = new Vector2(size.x, 0.0f);
-        sizeY = new Vector2(0.0f, size.y);
+        _size = new Vector3((_sprite.rect.size/_sprite.pixelsPerUnit).x, 
+                            (_sprite.rect.size/_sprite.pixelsPerUnit).y,
+                             1.0f);
     }
 
-    private void updateSprites(Vector2 increment) {
+    void Start() {
 
-        lastPosic += increment;
+        _initialPosition = spaceship.transform.position;
 
-        foreach (GameObject background in backgrounds) {
+        // Generating initial positions of sprites in grid, and instantiating
+        for (int i=-2; i<3; i++) {
+            for (int j=-2; j<3; j++) {
 
-            background.transform.position += new Vector3(increment.x, increment.y, 0.0f);
-        }
-    }
+                _backgroundsInitialPosition.Add(_initialPosition + new Vector3(i*_size.x, j*_size.y, 0f));
 
-    public static Vector2 Snap(Vector2 vec, float gridSize = 1.0f) {
-
-        return new Vector2(
-            Mathf.Round(vec.x / gridSize) * gridSize,
-            Mathf.Round(vec.y / gridSize) * gridSize);
-    }
-
-    private void Start() {
-
-        lastPosic = rocket.transform.position;
-
-        // Gerando sprites
-        for (int i = -2; i < 3; i++) {
-            for (int j = -2; j < 3; j++) {
-
-                backgrounds.Add(Object.Instantiate(baseBackground, lastPosic + i*sizeX + j*sizeY, Quaternion.identity, transform));
+                _backgrounds.Add(Object.Instantiate(baseBackground, _backgroundsInitialPosition[^1], Quaternion.identity, 
+                                                   transform));
             }
         }
     }
 
-    private void Update() {
+    void Update() {
+        
+        // Change in position since spawning
+        Vector3 deltaPosition = spaceship.transform.position - _initialPosition;
 
-        // Achar índice da célula em que está
-        gridIndex = Snap((new Vector2(rocket.transform.position.x, rocket.transform.position.y) - lastPosic) / size);
+        // Find current gridIndex and update _sprite to it
+        updateSprites(Snap(new Vector2(deltaPosition.x / _size.x,
+                                       deltaPosition.y / _size.y)));
+    }
 
-        // Incrementar a última posição
-        updateSprites(size * gridIndex);
+    // --------------------------------------------- Private -----------------------------------------------------------
+    private Vector2 Snap(Vector2 vec) {
 
-        // Reposicionar os sprits
+        return new Vector2(Mathf.Round(vec.x),
+                           Mathf.Round(vec.y));
+    }
 
+    private void updateSprites(Vector2 gridIndex) {
 
+        Vector2 deltaCellPosition = _size * gridIndex;
+        
+        // Update each background position
+        for (int i=0; i<_backgrounds.Count; i++) {
+
+            _backgrounds[i].transform.position = _backgroundsInitialPosition[i] 
+                                                + new Vector3(deltaCellPosition.x, 
+                                                              deltaCellPosition.y, 
+                                                              0.0f);
+        }
     }
 }

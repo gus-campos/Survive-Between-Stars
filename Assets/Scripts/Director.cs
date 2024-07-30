@@ -1,119 +1,86 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Android;
 
 public class Director : MonoBehaviour {
 
-    // Audio source da trilha
-    private AudioSource soundtrack;
-    // Panel de game over
-    [SerializeField] private GameObject gameOverPanel;
-    // Panel de pause
-    [SerializeField] private GameObject pausePanel;
-    // Foguete
-    [SerializeField] private Rocket rocket;
-    // Gerador de minas
-    [SerializeField] private MineGenerator mineGenerator;
-    // GuiManager
+    private AudioSource ost;
+    [SerializeField] private Spaceship spaceship;
+    [SerializeField] private Spawner spawner;
     [SerializeField] private GuiManager guiManager;
-
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject mainCamera;
-
     [SerializeField] private GameObject instructionsPanel;
 
-    // Indicador de pause
     private bool paused = false;
-    // Indicador de jogo terminado
-    private bool gameOver = false;
+    public bool gameOver = false;
 
-    private bool aux = true;
+    public void Start() {
+        
+        // Soundtrack, first audiosource component
+        ost = GetComponents<AudioSource>()[0];
 
-    void Update() {
-
-        // Apenas no primeiro update, pausar o jogo
-        if (aux) { Pause(); aux = false; }
-
-        if (false) { //Input.GetKeyDown(KeyCode.Escape)) {
-            
-            Pause();
-        }
-
-        if (false) { //Input.GetKeyDown(KeyCode.R)) {
-            
-            RestartGame();  
-        }
+        // Start paused
+        Pause();
     }
 
     public void Pause() {
 
-        // Se não tiver em estado de game over
+        // If not in game over mode
         if (!gameOver) {
 
-            // Se não tiver pausado
+            // If not in pause mode, pause
             if (!paused) {
 
+                // Stop time, ost, show pause panel
                 Time.timeScale = 0;
-                pausePanel.SetActive(true);
-                paused = true;
-                soundtrack.Stop();
+                ost.Stop();
+                // GUI
                 instructionsPanel.SetActive(true);
+                pausePanel.SetActive(true);
+                // Pause state
+                paused = true;
             }
 
+            // If in pause mode, unpause
             else {
 
+                // Running time, ost, show pause panel
                 Time.timeScale = 1;
-                pausePanel.SetActive(false);
-                paused = false;
-                soundtrack.Play();
+                ost.Play();
                 instructionsPanel.SetActive(false);
+                pausePanel.SetActive(false);
+                // Pause state
+                paused = false;
             }
         }
     }
 
-    public void Start() {
-        
-        // Inicia pausado
-        //Pause();
-
-        // Capturando AudioSource
-        soundtrack = GetComponent<AudioSource>();
-
-    }
-
     public void EndGame() {
 
-        // Congelar tempo
+        // Stop time, ost, show game over panel
         Time.timeScale = 0;
-        // Mostrar painel de Game Over
+        ost.Stop();
         gameOverPanel.SetActive(true);
-        // Interromper trilha sonora
-        soundtrack.Stop();
-        // Indicar que acabou
+        // GameOver State
         gameOver = true;
     }
 
     public void RestartGame() {
 
-        // Esconder imagem de Game Over
-        gameOverPanel.SetActive(false);
-        // Descongelar tempo
+        // Running time, play ost, reset camera and others
         Time.timeScale = 1;
-        // Reiniciar nave
-        rocket.Reset();
-        // Destruir tiros
-        rocket.DestroyShots();
-        // Reposicionando câmera
-        mainCamera.GetComponent<CameraControl>().Move(rocket.transform.position);
-        // Destruir todas as minas
-        mineGenerator.DestroyAll();
-        // Voltar trilha sonora
-        soundtrack.Play();
-        // Resetar score
+        ost.Play();
+        // Camera
+        mainCamera.GetComponent<CameraControl>().MoveCamera(spaceship.transform.position);
+        // Spawner
+        spawner.DestroyAll();
+        spawner.ResetChaserVelocity();
+        // spaceship
+        spaceship.Reset();
+        //Gui 
+        gameOverPanel.SetActive(false);
         guiManager.ResetScore();
-        // Indicar que voltou
+        // GameOver State
         gameOver = false;
-        // Mudando tempo inicial das minas
-        mineGenerator.ResetMineVelocity();
     }
 }
