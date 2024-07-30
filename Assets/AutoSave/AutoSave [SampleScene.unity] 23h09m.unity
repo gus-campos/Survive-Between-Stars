@@ -265,10 +265,6 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: e1612e94-f4e5-40cc-8fc3-f6afde3223ec
-    m_ActionName: Rocket/Look[/Mouse/position,/XInputControllerWindows/rightStick]
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: b95d561e-d829-4651-9e13-6ed191d2a7b4
     m_ActionName: Rocket/Shoot[/Mouse/leftButton,/XInputControllerWindows/rightTrigger]
   - m_PersistentCalls:
@@ -283,10 +279,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: e3127417-4ef0-4ddb-a632-7bd977132b30
     m_ActionName: Rocket/LookMouse[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8c1d15cb-6434-45fd-8d6b-cfef8de74c47
-    m_ActionName: Rocket/MouseMode[/Keyboard/m]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: cab0aec5-b82a-42f4-9ae9-3d23e8542ff3
@@ -307,6 +299,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: b87bce94-56b0-4a27-bf5a-953348928275
     m_ActionName: System/Resume[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a811c978-96b1-484d-8747-972f72c6c49f
+    m_ActionName: System/Pause[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: System
@@ -736,7 +732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smoothTime: 0.5
-  rocket: {fileID: 869813953}
+  spaceship: {fileID: 869813953}
 --- !u!1 &609178045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,10 +1140,6 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: e1612e94-f4e5-40cc-8fc3-f6afde3223ec
-    m_ActionName: Rocket/Look[/Mouse/position,/XInputControllerWindows/rightStick]
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1306960256}
         m_TargetAssemblyTypeName: Director, Assembly-CSharp
@@ -1175,14 +1167,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: e3127417-4ef0-4ddb-a632-7bd977132b30
     m_ActionName: Rocket/LookMouse[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8c1d15cb-6434-45fd-8d6b-cfef8de74c47
-    m_ActionName: Rocket/MouseMode[/Keyboard/m]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 7c0aaa07-9769-4c02-9651-0e90e03b0be2
-    m_ActionName: Rocket/Brake[/Keyboard/ctrl]
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: cab0aec5-b82a-42f4-9ae9-3d23e8542ff3
@@ -1330,7 +1314,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1181419219, guid: e494c1611988fcb4fa3f29f87a6760d8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bdc13af691e09ee48822ebf63901e0b9, type: 3}
   m_Color: {r: 0.6773585, g: 0.76957345, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1582,7 +1566,7 @@ MonoBehaviour:
     m_ActionName: System/Pause[/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Rocket
+  m_DefaultActionMap: spaceship
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 519420031}
 --- !u!70 &869813964
@@ -1696,15 +1680,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ce64f6a3de1527449fd38b050335c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minePrefab: {fileID: 3980581670258360207, guid: d51bf0fbbfb8a5d4aa4840248704dfc4, type: 3}
-  minesPooled: 6
+  chaserPrefab: {fileID: 3980581670258360207, guid: d51bf0fbbfb8a5d4aa4840248704dfc4, type: 3}
+  chasersPooled: 10
   timerCriteria: 1.51
-  mineMaxCount: 4
+  chaserMaxCount: 4
   distanceFromRocket: 30.2
   generationRadius: 77.9
-  mineCounter: 0
-  mineVelocityNorm: -6.53
-  InitialMineVelocityNorm: 80
+  chaserCounter: 0
+  chaserVelocityNorm: 0
+  InitialChaserVelocityNorm: 60
   normScaling: 10
 --- !u!4 &1026689109
 Transform:
@@ -2348,7 +2332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f2722b9095031745bec991b37dcaddf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rocket: {fileID: 869813954}
+  spaceship: {fileID: 0}
   spawner: {fileID: 1026689108}
   guiManager: {fileID: 929453108}
   gameOverPanel: {fileID: 669892286}
@@ -2676,7 +2660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseBackground: {fileID: 4507589595189362405, guid: 9d6a19444837dee4abca906e4cf8150e, type: 3}
-  rocket: {fileID: 869813953}
+  spaceship: {fileID: 0}
 --- !u!212 &1463973871
 SpriteRenderer:
   m_ObjectHideFlags: 0
