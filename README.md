@@ -13,6 +13,8 @@ The longer you survive, the faster they get.
 
 ### Itch.io page
 
+The game can be played directly in the embeded version on Itch.io page.
+
 https://gus-campos.itch.io/survive-between-stars
 
 ### Installation
