@@ -15,6 +15,10 @@ The longer you survive, the faster they get.
 
 https://gus-campos.itch.io/survive-between-stars
 
+### Download
+
+[a relative link](Build/Windows/survive-between-stars-windows.zip)
+
 ### Installation
 
 Simply download the right version and run the executable file.
