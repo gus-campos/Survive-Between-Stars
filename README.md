@@ -1,4 +1,4 @@
-# For how long can you Survive Between Stars?
+# For how long can you *Survive Between Stars*?
 
 Don't let the enemy's spaceships get to you.
 Shoot them down, keep on moving and dash out of the way.
