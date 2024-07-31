@@ -15,12 +15,12 @@ The longer you survive, the faster they get.
 
 https://gus-campos.itch.io/survive-between-stars
 
+### Installation
+
+Simply download the right zip file version, exctract and run the executable file.
+
 ### Download
 
 - [Windows Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Windows/Survive-Between-Stars-Windows.zip)
 - [Linux Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Linux/Survive-Between-Stars-Linux.zip)
 - [MacOS Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/MacOS/Survive-Between-Stars-MacOS.zip)
-
-### Installation
-
-Simply download the right version and run the executable file.
