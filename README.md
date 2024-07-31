@@ -54,7 +54,7 @@ https://mixkit.co/free-sound-effects/wind/
 Press Start 2P font - adapted, with border and shadow added, into game cover and “Game Over” image:\
 https://www.fontspace.com/press-start-2p-font-f11591 
 
-Spaceships Sprites – colors adapted:
+Spaceships Sprites – colors adapted:/
 https://dragoondomain.itch.io/space-ship-sprites 
 
 
