@@ -27,12 +27,12 @@ Simply download the right zip file version, extract, and run the executable file
 - [Linux Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Linux/Survive-Between-Stars-Linux.zip)
 - [MacOS Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/MacOS/Survive-Between-Stars-MacOS.zip)
 
-### Assets source:
+### Assets sources:
 
-Portrait In Ultraviolet from NASA – adapted into infinite background:\
+##### Portrait In Ultraviolet from NASA – adapted into infinite background:\
 https://svs.gsfc.nasa.gov/cgi-bin/details.cgi?aid=11273&button=recent
 
-Explosions sounds – adapted:\
+* Explosions sounds – adapted:\
 https://www.zapsplat.com/music/designed-explosion-detonate-blast-1/ 
 https://www.zapsplat.com/music/short-large-airy-explosion-1/ 
 
