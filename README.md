@@ -19,7 +19,7 @@ https://gus-campos.itch.io/survive-between-stars
 
 ### Installation
 
-Simply download the right zip file version, exctract and run the executable file.
+Simply download the right zip file version, extract, and run the executable file.
 
 ### Download
 
