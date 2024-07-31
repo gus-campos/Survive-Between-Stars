@@ -30,7 +30,7 @@ Simply download the right zip file version, extract, and run the executable file
 ### Assets source:
 
 Portrait In Ultraviolet from NASA – adapted into infinite background:
-[https://svs.gsfc.nasa.gov/cgi-bin/details.cgi?aid=11273&button=recent]
+https://svs.gsfc.nasa.gov/cgi-bin/details.cgi?aid=11273&button=recent
 
 Explosions sounds – adapted:
 https://www.zapsplat.com/music/designed-explosion-detonate-blast-1/ 
