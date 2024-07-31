@@ -17,7 +17,9 @@ https://gus-campos.itch.io/survive-between-stars
 
 ### Download
 
-[a relative link](Build/Windows/survive-between-stars-windows.zip)
+[Windows Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Windows/Survive-Between-Stars-Windows.zip)
+[Linux Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Windows/Survive-Between-Stars-Linux.zip)
+[MacOS Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Windows/Survive-Between-Stars-MacOS.zip)
 
 ### Installation
 
