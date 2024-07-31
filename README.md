@@ -57,4 +57,10 @@ https://www.fontspace.com/press-start-2p-font-f11591
 ##### Spaceships Sprites – colors adapted:
 https://dragoondomain.itch.io/space-ship-sprites 
 
+### Softwares used:
 
+* Unity
+* GIMP
+* LMMS
+* Audacity
+* Codeshack's Images to Sprite Sheet Generator
