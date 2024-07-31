@@ -6,7 +6,12 @@ public class CameraControl : MonoBehaviour {
     private Vector3 currentVelocity;
 
     [SerializeField] private float smoothTime = 0.1f;
-    [SerializeField] private GameObject spaceship;
+    private GameObject _spaceship;
+
+    void Start() {
+
+        _spaceship = GameObject.FindGameObjectWithTag("Player");
+    }
 
     public void MoveCamera(Vector3 position) {
         
@@ -16,8 +21,8 @@ public class CameraControl : MonoBehaviour {
     void LateUpdate() {
 
         // Target for the smooth MoveCamerament of the camera    
-        Vector3 target = new Vector3(spaceship.transform.position.x, 
-                                     spaceship.transform.position.y,
+        Vector3 target = new Vector3(_spaceship.transform.position.x, 
+                                     _spaceship.transform.position.y,
                                      cameraZcoordinate);
 
         // Update smoothly the MoveCamerament of the camera

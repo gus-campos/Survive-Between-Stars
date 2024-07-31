@@ -154,7 +154,9 @@ public class Chaser : MonoBehaviour {
         spriteRenderer.enabled = false;
         circleCollider2D.enabled = false;
 
+        // Starting explosion and assert that it's rewinded
         explosionInstantiated.SetActive(true);       
+        explosionAnimator.Update(0f);
 
         spawner.chaserCounter -= 1;
     }
@@ -164,6 +166,8 @@ public class Chaser : MonoBehaviour {
         rb.simulated = true;
         spriteRenderer.enabled = true;
         circleCollider2D.enabled = true;
+        // Assert that explosion is not active
+        explosionInstantiated.SetActive(false);
     }
 
     // --------------------------------------- Collisions --------------------------------------------------------------

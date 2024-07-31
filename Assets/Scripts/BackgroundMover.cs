@@ -9,28 +9,30 @@ using Quaternion = UnityEngine.Quaternion;
 public class BackgroundMover : MonoBehaviour {
 
     [SerializeField] private GameObject baseBackground;
-    [SerializeField] private GameObject spaceship;
+    private GameObject _spaceship;
 
     private Sprite _sprite;
     private Vector3 _size;
     private Vector3 _initialPosition;
     private List<GameObject> _backgrounds = new List<GameObject>();
-    private List<Vector3> _backgroundsInitialPosition =  new List<Vector3>();
+    private List<Vector3> _backgroundsInitialPosition = new List<Vector3>();
 
     // --------------------------------------------- Public ------------------------------------------------------------
     void Awake() {
 
-        spaceship = GameObject.FindGameObjectWithTag("Player");
+        
+    }
+
+    void Start() {
+
+        _spaceship = GameObject.FindGameObjectWithTag("Player");
         _sprite = baseBackground.GetComponent<SpriteRenderer>().sprite;
 
         _size = new Vector3((_sprite.rect.size/_sprite.pixelsPerUnit).x, 
                             (_sprite.rect.size/_sprite.pixelsPerUnit).y,
                              1.0f);
-    }
 
-    void Start() {
-
-        _initialPosition = spaceship.transform.position;
+        _initialPosition = _spaceship.transform.position;
 
         // Generating initial positions of sprites in grid, and instantiating
         for (int i=-2; i<3; i++) {
@@ -47,7 +49,7 @@ public class BackgroundMover : MonoBehaviour {
     void Update() {
         
         // Change in position since spawning
-        Vector3 deltaPosition = spaceship.transform.position - _initialPosition;
+        Vector3 deltaPosition = _spaceship.transform.position - _initialPosition;
 
         // Find current gridIndex and update _sprite to it
         updateSprites(Snap(new Vector2(deltaPosition.x / _size.x,

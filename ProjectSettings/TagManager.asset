@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Beam
   - Chaser
+  - PlayerSpawn
+  - Mine
+  - DashFilling
+  - HealthFilling
   layers:
   - Default
   - TransparentFX

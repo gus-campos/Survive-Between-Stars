@@ -4,7 +4,9 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
 
     private GameObject _dynamic;
-    private GameObject _rocket;
+    private GameObject _spaceship;
+
+    [SerializeField] private GameObject spaceshipPrefab;
 
     // Pooling
     [SerializeField] private GameObject chaserPrefab;
@@ -24,15 +26,23 @@ public class Spawner : MonoBehaviour {
     [SerializeField] private float InitialChaserVelocityNorm;
     [SerializeField] private float normScaling;
     
+
+    void Awake() {
+        
+        _dynamic = GameObject.Find("_Dynamic");
+        
+        _spaceship = Object.Instantiate(spaceshipPrefab, 
+                                        Vector3.zero, 
+                                        Quaternion.identity,
+                                        _dynamic.transform); 
+    }
+
     public void ResetChaserVelocity() {
 
         chaserVelocityNorm = InitialChaserVelocityNorm;
     }
 
     private void Start() {
-
-        _rocket = GameObject.FindGameObjectWithTag("Player");
-        _dynamic = GameObject.Find("_Dynamic");
 
         for (int i=0; i<chasersPooled; i++) {
 
@@ -59,7 +69,7 @@ public class Spawner : MonoBehaviour {
             if ((timer > timerCriteria) && (randPosition.magnitude > distanceFromRocket)) {
 
                 GameObject tmpChaser = GetPooledChaser();
-                tmpChaser.transform.position = _rocket.transform.position + randPosition;
+                tmpChaser.transform.position = _spaceship.transform.position + randPosition;
                 tmpChaser.SetActive(true);
 
                 chaserCounter += 1;

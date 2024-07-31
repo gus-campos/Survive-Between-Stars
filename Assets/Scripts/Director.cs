@@ -3,7 +3,7 @@ using UnityEngine;
 public class Director : MonoBehaviour {
 
     private AudioSource ost;
-    [SerializeField] private Spaceship spaceship;
+    private Spaceship spaceship;
     [SerializeField] private Spawner spawner;
     [SerializeField] private GuiManager guiManager;
     [SerializeField] private GameObject gameOverPanel;
@@ -14,16 +14,18 @@ public class Director : MonoBehaviour {
     private bool paused = false;
     public bool gameOver = false;
 
-    public void Start() {
+    void Start() {
+
+        spaceship = GameObject.FindWithTag("Player").GetComponent<Spaceship>();
         
-        // Soundtrack, first audiosource component
+        // Soundtrack: first audiosource component
         ost = GetComponents<AudioSource>()[0];
 
         // Start paused
         Pause();
     }
 
-    public void Pause() {
+    void Pause() {
 
         // If not in game over mode
         if (!gameOver) {

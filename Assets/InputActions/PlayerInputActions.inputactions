@@ -1,5 +1,5 @@
 {
-    "name": "RocketInputActions",
+    "name": "PlayerInputActions",
     "maps": [
         {
             "name": "spaceship",
@@ -105,7 +105,7 @@
             "id": "f3b7eb0b-0d98-4994-ac30-552b5b928165",
             "actions": [
                 {
-                    "name": "Reset",
+                    "name": "RestartGame",
                     "type": "Button",
                     "id": "cab0aec5-b82a-42f4-9ae9-3d23e8542ff3",
                     "expectedControlType": "Button",
@@ -130,6 +130,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GameOverRestart",
+                    "type": "Button",
+                    "id": "f06c694b-cb71-4364-b2b4-ed6442b108eb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -140,7 +149,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Reset",
+                    "action": "RestartGame",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -163,6 +172,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4e8c1304-cb66-44bf-bfad-f0327f6e9011",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GameOverRestart",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

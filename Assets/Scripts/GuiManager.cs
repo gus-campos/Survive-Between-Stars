@@ -3,16 +3,17 @@ using TMPro;
 
 public class GuiManager : MonoBehaviour {
 
-    private int score = 0;
-    private float survivingSince = 0f;
+    private float _survivingSince = 0f;
+    private int _score = 0;
     // GUI elements
     [SerializeField] private TextMeshProUGUI TimeText;
     [SerializeField] private TextMeshProUGUI scoreText;
     
+    
     void Update() {
 
         // Updates formated time in GUI
-        TimeText.text = FormatTime(Time.time - survivingSince);
+        TimeText.text = FormatTime(Time.time - _survivingSince);
     }
 
     private string FormatTime(float time) {
@@ -24,22 +25,22 @@ public class GuiManager : MonoBehaviour {
     public void ResetScore() {
 
         // Resets score
-        score = 0;
+        _score = 0;
         // Set new initial time for surviving (now)
-        survivingSince = Time.time;
+        _survivingSince = Time.time;
         // Update survived time to zero
-        TimeText.text = FormatTime(Time.time - survivingSince);
+        TimeText.text = FormatTime(Time.time - _survivingSince);
         // Update score to zero
-        scoreText.text = score.ToString("0");
+        scoreText.text = _score.ToString("0");
     }
 
 
     public void AddToScore(int number) {
 
         // Increments score points
-        score += number;
+        _score += number;
         // Update score showed in GUI accordingly 
-        scoreText.text = score.ToString();
+        scoreText.text = _score.ToString();
     }
 
 }

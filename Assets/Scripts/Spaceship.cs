@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Image = UnityEngine.UI.Image;
+using UnityEngine.UI;
 
 public class Spaceship : MonoBehaviour {
 
@@ -26,7 +26,7 @@ public class Spaceship : MonoBehaviour {
     private float _shootCooldownTimer;
     private bool _shootAvailable = true;
     [SerializeField] private GameObject beamPrefab;
-    [SerializeField] private float rocketLenth;
+    private float spaceshipLenth = 5f;
     [SerializeField] private float shootCooldownTimeout = 0.25f;
 
     // Beams pooling
@@ -34,7 +34,7 @@ public class Spaceship : MonoBehaviour {
     [SerializeField] private int beamsPooled;
 
     // Sons
-    private AudioSource _rocketAudioSource;
+    private AudioSource _spaceshipAudioSource;
     [SerializeField] private AudioClip Boom;
     [SerializeField] private AudioClip pewPew;
     [SerializeField] private AudioClip dashingSound;
@@ -45,10 +45,10 @@ public class Spaceship : MonoBehaviour {
     private bool _dashAvailable = true;
     private float _dashDurationTimer;
     private float _rocketMomentum;
+    private Image dashFillingBar;
     [SerializeField] private float dashAvailableTimeOut;
     [SerializeField] private float dashDuration;
     [SerializeField] private float dashMomentum;
-    [SerializeField] private Image dashBar;
     [SerializeField] private Texture2D cursorTexture;
 
     // Input
@@ -56,9 +56,9 @@ public class Spaceship : MonoBehaviour {
     private bool _mouseInputMode = true;
 
     // Life system
-    private float _rocketHealth;
-    [SerializeField] private float initialRocketHealth = 100f;
-    [SerializeField] private Image healthBar;
+    private float _spaceshipHealth;
+    private Image _healthFillingBar;
+    [SerializeField] private float initialSpaceshipHealth = 100f;
 
     private float _damage = 34f;
     private float _knockback = 100f;
@@ -70,7 +70,7 @@ public class Spaceship : MonoBehaviour {
 
         // Components
         _rb = GetComponent<Rigidbody2D>();
-        _rocketAudioSource = GetComponent<AudioSource>();
+        _spaceshipAudioSource = GetComponent<AudioSource>();
 
         // Storing initial stats 
         _startingPosition = transform.position;
@@ -79,6 +79,10 @@ public class Spaceship : MonoBehaviour {
     }
 
     void Start() {
+
+        // Filling Bars
+        _healthFillingBar = GameObject.FindWithTag("HealthFilling").GetComponent<Image>();
+        dashFillingBar = GameObject.FindWithTag("DashFilling").GetComponent<Image>();
 
         // GameObjects
         _director = GameObject.FindObjectOfType<Director>();
@@ -90,7 +94,7 @@ public class Spaceship : MonoBehaviour {
                          CursorMode.Auto);
 
         // Setting health
-        _rocketHealth = initialRocketHealth;
+        _spaceshipHealth = initialSpaceshipHealth;
 
         // Pooling beams
         for (int i=0; i<beamsPooled; i++) {
@@ -141,11 +145,11 @@ public class Spaceship : MonoBehaviour {
             // Getting pooled beam and setting transform
             GameObject tmpBeam = GetPooledBeam();
             // Resetting stats ans activating
-            tmpBeam.transform.position = transform.position + transform.rotation * Vector3.right * rocketLenth;
+            tmpBeam.transform.position = transform.position + (transform.rotation * Vector3.right * spaceshipLenth);
             tmpBeam.transform.rotation = transform.rotation;
             tmpBeam.SetActive(true);
             // Sound
-            _rocketAudioSource.PlayOneShot(pewPew, 1F);
+            _spaceshipAudioSource.PlayOneShot(pewPew, 1F);
             // Availability
             _shootAvailable = false;
             // Resetting timer
@@ -178,7 +182,7 @@ public class Spaceship : MonoBehaviour {
             _rb.AddForce(transform.right * dashMomentum, ForceMode2D.Impulse);
 
             _dashing = true;
-            _rocketAudioSource.PlayOneShot(dashingSound, 1F);
+            _spaceshipAudioSource.PlayOneShot(dashingSound, 1F);
         }
     }
 
@@ -217,9 +221,9 @@ public class Spaceship : MonoBehaviour {
     private void UpdateDash() {
 
         // GUI update
-        if (_dashAvailable) dashBar.fillAmount = 1f;
+        if (_dashAvailable) dashFillingBar.fillAmount = 1f;
 
-        else dashBar.fillAmount = 1 - (_dashAvailableTimer / dashAvailableTimeOut);
+        else dashFillingBar.fillAmount = 1 - (_dashAvailableTimer / dashAvailableTimeOut);
 
         // Dash update
         if (_dashing) {
@@ -253,9 +257,9 @@ public class Spaceship : MonoBehaviour {
     private void UpdateHealth() {
 
         // Updating GUI
-        healthBar.fillAmount = 1 - (_rocketHealth / initialRocketHealth);
+        _healthFillingBar.fillAmount = 1 - (_spaceshipHealth / initialSpaceshipHealth);
 
-        if (_rocketHealth <= 0) { 
+        if (_spaceshipHealth <= 0) { 
             
             if (!_director.gameOver) { 
                 
@@ -289,7 +293,7 @@ public class Spaceship : MonoBehaviour {
     private void SelfDestruct() {
 
         // Tocar o som de explosão
-        _rocketAudioSource.PlayOneShot(Boom, 0.8F);
+        _spaceshipAudioSource.PlayOneShot(Boom, 0.8F);
         // Parar de simular sua física
         _rb.simulated = false;   
         // Congelar o tempo
@@ -297,7 +301,7 @@ public class Spaceship : MonoBehaviour {
     }
 
     public void Reset() {
-
+        
         DeactivateBeams();
 
         // Voltar para o status inicial
@@ -314,7 +318,7 @@ public class Spaceship : MonoBehaviour {
         _dashing = false;
         _dashAvailable = true;
         _shootAvailable = true;
-        _rocketHealth = initialRocketHealth;
+        _spaceshipHealth = initialSpaceshipHealth;
         
         // Ligar simulação física
         _rb.simulated = true;
@@ -327,7 +331,7 @@ public class Spaceship : MonoBehaviour {
 
         if (tag != "Untagged") {
 
-            _rocketHealth -= _damage; 
+            _spaceshipHealth -= _damage; 
             
             if (!_dashing) {
 
