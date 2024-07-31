@@ -8,7 +8,7 @@ The longer you survive, the faster they chase you.
 
 - Aim with mouse
 - Shoot with left mouse button
-- Accelerate with right mouse button
+- Accelerate holding the right mouse button
 - Dash with double click on right mouse button
 
 ### Itch.io page
