@@ -6,10 +6,10 @@ The longer you survive, the faster they get.
 
 ### Controls
 
--Aim with mouse
--Shoot with left mouse button
--Accelerate with right mouse button
--Dash with double click on right mouse button
+- Aim with mouse
+- Shoot with left mouse button
+- Accelerate with right mouse button
+- Dash with double click on right mouse button
 
 ### Itch.io page
 
