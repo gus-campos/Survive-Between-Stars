@@ -2,7 +2,7 @@
 
 Don't let the enemy's spaceships get to you. \
 Shoot them down, keep on moving and dash out of the way. \
-The longer you survive, the faster they get.
+The longer you survive, the faster they chase you.
 
 ### Controls
 
