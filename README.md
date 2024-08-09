@@ -27,6 +27,14 @@ Simply download the right zip file version, extract, and run the executable file
 - [Linux Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/Linux/Survive-Between-Stars-Linux.zip)
 - [MacOS Zip](https://github.com/gus-campos/survive-between-stars/raw/master/Build/MacOS/Survive-Between-Stars-MacOS.zip)
 
+### Softwares used:
+
+* Unity
+* GIMP
+* LMMS
+* Audacity
+* Codeshack's Images to Sprite Sheet Generator
+
 ### Assets sources:
 
 ##### Portrait In Ultraviolet from NASA – adapted into infinite background:
@@ -57,10 +65,3 @@ https://www.fontspace.com/press-start-2p-font-f11591
 ##### Spaceships Sprites – colors adapted:
 https://dragoondomain.itch.io/space-ship-sprites 
 
-### Softwares used:
-
-* Unity
-* GIMP
-* LMMS
-* Audacity
-* Codeshack's Images to Sprite Sheet Generator
