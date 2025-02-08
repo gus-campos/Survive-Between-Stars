@@ -149,7 +149,7 @@ public class Spaceship : MonoBehaviour {
             tmpBeam.transform.rotation = transform.rotation;
             tmpBeam.SetActive(true);
             // Sound
-            _spaceshipAudioSource.PlayOneShot(pewPew, 1F);
+            _spaceshipAudioSource.PlayOneShot(pewPew);
             // Availability
             _shootAvailable = false;
             // Resetting timer
